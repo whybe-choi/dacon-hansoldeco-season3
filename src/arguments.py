@@ -34,8 +34,9 @@ class DataArguemnts:
 @dataclass
 class VectorDBArguments:
     embedding_model: str = field(metadata={"help": "Path to embedding model for indexing"})
+    train_data: str = field(metadata={"help": "Path to train data"})
     document_path: str = field(metadata={"help": "Path to document"})
-    save_path: str = field(metadata={"help": "Path to save vector db"})
+    index_path: str = field(metadata={"help": "Path to save/load vector db"})
 
 
 @dataclass
