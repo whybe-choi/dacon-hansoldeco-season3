@@ -34,14 +34,12 @@ class DataArguemnts:
 @dataclass
 class VectorDBArguments:
     embedding_model: str = field(metadata={"help": "Path to embedding model for indexing"})
-    train_data: str = field(metadata={"help": "Path to train data"})
-    document_path: str = field(metadata={"help": "Path to document"})
-    index_path: str = field(metadata={"help": "Path to save/load vector db"})
+    train_data: Optional[str] = field(default=None, metadata={"help": "Path to train data"})
+    index_path: Optional[str] = field(default="./qdrant", metadata={"help": "Path to save/load vector db"})
 
 
 @dataclass
-class RAGAtguments:
-    embedding_model: str = field(metadata={"help": "Path to embedding model for retrieval"})
+class RetrievalAtguments:
     top_k: int = field(default=5, metadata={"help": "Top k for RAG})"})
     use_reranker: Optional[bool] = field(default=False, metadata={"help": "Whether to use reranker."})
     reranker_model: Optional[str] = field(default="", metadata={"help": "Path to reranker model."})
