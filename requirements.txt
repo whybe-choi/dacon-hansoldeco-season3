@@ -13,6 +13,7 @@ langchain-community==0.3.18
 langchain-huggingface==0.1.2
 langchain-openai==0.3.7
 langchain-text-splitters==0.3.6
+langchain-qdrant==0.2.0
 pymupdf==1.25.3 
 pymupdf4llm==0.0.17
-faiss-cpu==1.10.0
+qdrant-client==1.13.3
