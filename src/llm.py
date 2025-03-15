@@ -19,7 +19,7 @@ def load_pipeline(model_args, generation_config):
     model = AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         quantization_config=bnb_config if model_args.use_bnb else None,
-        device="auto",
+        device_map="auto",
         trust_remote_code=True,
     )
 
@@ -30,7 +30,7 @@ def load_pipeline(model_args, generation_config):
         do_sample=generation_config.do_sample,
         temperature=generation_config.temperature,
         top_p=generation_config.top_p,
-        retrun_full_text=generation_config.return_full_text,
+        return_full_text=generation_config.return_full_text,
         max_new_tokens=generation_config.max_new_tokens,
     )
 

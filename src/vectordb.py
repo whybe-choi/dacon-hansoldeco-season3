@@ -7,6 +7,7 @@ from datasets import load_dataset
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_core.documents import Document
+from qdrant_client import models
 
 from arguments import VectorDBArguments
 
@@ -68,7 +69,18 @@ class VectorDB:
         if not self.train_store:
             raise ValueError("Train store not loaded.")
 
-        return self.train_store.similarity_search(query=query, k=k, filter={"category": category})
+        return self.train_store.similarity_search(
+            query=query,
+            k=k,
+            filter=models.Filter(
+                must=[
+                    models.FieldCondition(
+                        key="metadata.category",
+                        match=models.MatchValue(value=category),
+                    ),
+                ]
+            ),
+        )
 
 
 def main():

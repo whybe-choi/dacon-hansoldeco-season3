@@ -19,6 +19,12 @@ def main():
     parser = HfArgumentParser((ModelArguments, GenerationConfig, DataArguemnts, VectorDBArguments, RetrievalAtguments))
     model_args, generation_config, data_args, vectordb_args, retrieval_args = parser.parse_args_into_dataclasses()
 
+    logging.basicConfig(
+        format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
+        datefmt="%m/%d/%Y %H:%M:%S",
+        level=logging.INFO,
+    )
+
     llm = load_pipeline(model_args, generation_config)
 
     logging.info("Loading vector indexes from: %s", vectordb_args.index_path)
@@ -32,20 +38,17 @@ def main():
 
     test_results = []
     for idx, row in tqdm(test.iterrows(), total=len(test), desc="Generating responses"):
-        category = row.get("category", "")
-        query = row.get("query", "")
+        category = row.get("공종(중분류)", "")
+        query = row.get("사고원인", "")
 
-        retrieved_docs = vector_db.search(query, category, retrieval_args.k)
+        retrieved_docs = vector_db.search(query, category, retrieval_args.top_k)
         train_examples = "\n\n".join(
-            [
-                f"사고원인: {retrieved_docs.page_content}\n방지대책: {retrieved_docs.metadata.solution}"
-                for doc in retrieved_docs
-            ]
+            [f"Question: {doc.page_content}\Answer: {doc.metadata['solution']}" for doc in retrieved_docs]
         )
 
         chain = (
             {
-                "train_examples": train_examples,
+                "train_examples": lambda x: train_examples,
                 "query": RunnablePassthrough(),
             }
             | prompt
@@ -53,9 +56,10 @@ def main():
             | StrOutputParser()
         )
 
-        response = chain.invoke(query=query)
+        response = chain.invoke(query).strip()
         test_results.append(response)
 
+        logging.info("[Row %d]", idx)
         logging.info("Query   : %s", query)
         logging.info("Response: %s", response)
 
