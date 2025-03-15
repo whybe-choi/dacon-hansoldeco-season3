@@ -14,10 +14,6 @@ conda activate dacon
 pip install -r requirements.txt
 pip install flash-attn --no-build-isolation
 ```
-## Chunking
-```bash
-python chunking.py
-```
 
 ## Indexing
 
@@ -25,6 +21,16 @@ python chunking.py
 python src/vectordb.py \
     --embedding_model nlpai-lab/KURE-v1 \
     --train_data ./data/train_preprocessed.csv \
-    --document_path ./data/건설안전지침_분할결과 \
-    --index_path ./faiss
+    --index_path ./qdrant
+```
+
+## RAG
+```bash
+python src/main.py \
+    --model_name_or_path rtzr/ko-gemma-2-9b-it \
+    --test_data ./data/test_preprocessed.csv \
+    --embedding_model nlpai-lab/KURE-v1 \
+    --index_path ./qdrant \
+    --top_k 6 \
+    --submission_data ./submissions/submssion.csv
 ```
