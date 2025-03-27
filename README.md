@@ -38,6 +38,7 @@ python src/expand_query.py \
 python src/main.py \
     --model_name_or_path HumanF-MarkrAI/Gukbap-Gemma2-9B \
     --test_data ./data/test_preprocessed.csv \
+    --query_expansions_path ./data/query_expansions.jsonl \
     --embedding_model nlpai-lab/KURE-v1 \
     --top_k 30 \
     --documents_path ./data/documents \
