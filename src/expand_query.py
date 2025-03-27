@@ -1,5 +1,6 @@
 import logging
 from tqdm import tqdm
+import json
 
 import pandas as pd
 from transformers import HfArgumentParser
@@ -29,7 +30,7 @@ def main():
 
     chain = prompt | llm | StrOutputParser()
 
-    expanded_queries = []
+    results = []
     for i, row in tqdm(test.iterrows(), total=len(test), desc="Generating expanded queries"):
         kwargs = {
             "gongjong": row["공종2"],
@@ -41,4 +42,18 @@ def main():
 
         # 체인 실행
         response = chain.invoke(kwargs)
-        print(response)
+        response = response.replace("model```json\n", "")
+        response = response.replace("```", "")
+        response_json = json.loads(response)
+
+        result = {"quesitons": response_json.get("quesitons", []), "test_id": row["ID"]}
+        results.append(result)
+        print(result)
+
+    with open(data_args.output_data, "w", encoding="utf-8") as f:
+        for result in results:
+            f.write(json.dumps(result, ensure_ascii=False) + "\n")
+
+
+if __name__ == "__main__":
+    main()
