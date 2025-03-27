@@ -10,6 +10,20 @@ class ModelArguments:
     )
     use_bnb: Optional[bool] = field(default=False, metadata={"help": "Whether to use BitsAndBytes."})
     token: Optional[str] = field(default="")
+    attn_implementation: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "Which attention implementation to use. You can run `--attn_implementation=flash_attention_2`, in "
+            "which case you must install this manually by running `pip install flash-attn --no-build-isolation`."
+        },
+    )
+    torch_dtype: Optional[str] = field(
+        default="bfloat16",
+        metadata={
+            "help": "Override the default `torch.dtype` and load the model under this dtype.",
+            "choices": ["auto", "bfloat16", "float16", "float32"],
+        },
+    )
 
 
 @dataclass
@@ -39,7 +53,7 @@ class VectorDBArguments:
 
 
 @dataclass
-class RetrievalAtguments:
+class RetrievalArguments:
     top_k: int = field(default=5, metadata={"help": "Top k for RAG})"})
     use_reranker: Optional[bool] = field(default=False, metadata={"help": "Whether to use reranker."})
     reranker_model: Optional[str] = field(default="", metadata={"help": "Path to reranker model."})
