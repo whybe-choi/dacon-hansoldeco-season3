@@ -40,7 +40,11 @@ python src/main.py \
     --test_data ./data/test_preprocessed.csv \
     --embedding_model nlpai-lab/KURE-v1 \
     --index_path ./qdrant \
-    --top_k 5 \
+    --top_k 30 \
+    --documents_path ./data/documents \
+    --use_rernaker true \
+    --reranker_model dragonkue/bge-reranker-v2-m3-ko \
+    --rernaker_top_k 10 \
     --submission_data ./submissions/submssion.csv
     --token YOUR_HF_TOKEN
 ```
