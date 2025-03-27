@@ -23,6 +23,7 @@ def load_pipeline(model_args, generation_config):
         trust_remote_code=True,
         attn_implementation=model_args.attn_implementation,
         torch_dtype=model_args.torch_dtype,
+        token=model_args.token,
     )
 
     text_generation_pipeline = pipeline(
