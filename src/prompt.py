@@ -1,24 +1,22 @@
 from langchain_core.prompts import PromptTemplate
 
 
-def load_rag_prompt():
-    prompt_template = """<INSTRUCTION>
-You are a construction safety expert. \
-Ensure that you use the provided context information to generate your answer. \
-Use one sentence maximum and keep the answer concise. \
-Do not include any additional explanations (such as introductions or background information). \
-Be sure to answer in Korean.
-</INSTRUCTION>
+def load_reference_prompt():
+    prompt_template = """You are a construction safety expert. \
+Based on the provided question and retrieved safety guidelines, generate a single, comprehensive preventive measure that incorporates key points from the guidelines. \
+Follow these guidelines when responding:
+- Do not provide multiple alternative measures—combine key ideas into one well-structured sentence.
+- Ensure the measure is clear, actionable, and directly applicable to construction sites.
+- Keep the response within ONLY ONE sentence in KOREAN.
 
-<EXAMPLES>
-{train_examples}
-</EXAMPLES>
+Question: {question}
+Context:
+{context}
 
-Question: {query}
 Answer:"""
 
     prompt = PromptTemplate(
-        input_variables=["train_examples", "query"],
+        input_variables=["question", "context"],
         template=prompt_template,
     )
 
@@ -50,6 +48,34 @@ We are trying to find preventive measures in the safety guideline documents. Ple
 """
     prompt = PromptTemplate(
         input_variables=["job_process", "gongjong", "human_accident", "accident_object", "accident_cause"],
+        template=prompt_template,
+    )
+
+    return prompt
+
+
+def load_rag_prompt():
+    prompt_template = """You are a construction safety expert. \
+Your task is  to answer preventive measures for the cause of an incident given as a query based on context.
+
+The following responses were generated for different aspects of the same safety concern. Each response addresses a specific question related to the main safety issue.
+
+Follow these guidelines when responding:
+- Identify the core safety concern across all questions and answers
+- Extract and combine the most critical safety measures from all responses
+- Create a unified, comprehensive safety guideline that addresses the central issue
+- Ensure the final answer is clear, actionable, and directly applicable to construction sites
+- Keep the response within ONLY ONE sentence in KOREAN.
+
+Query: {query}
+
+Context:
+{context}
+
+Answer:"""
+
+    prompt = PromptTemplate(
+        input_variables=["query, context"],
         template=prompt_template,
     )
 
