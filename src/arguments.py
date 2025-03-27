@@ -40,22 +40,25 @@ class GenerationConfig:
 class DataArguemnts:
     test_data: str = field(metadata={"help": "Path to test"})
     submission_data: Optional[str] = field(default=None, metadata={"help": "Path to submission"})
-    output_data: Optional[str] = field(default=None, metadata={"help": "Path to query expansion"})
+    output_data: Optional[str] = field(default=None, metadata={"help": "Path to save query expansion"})
+    documents_path: Optional[str] = field(default=None, metadata={"help": "Path to documents"})
+    query_expansions_path: Optional[str] = field(default=None, metadata={"help": "Path to load query expansions"})
 
     def __post_init__(self):
         if not os.path.exists(self.test_data):
             raise FileNotFoundError(f"Dataset file not found: {self.test_data}")
 
 
-@dataclass
-class VectorDBArguments:
-    embedding_model: str = field(metadata={"help": "Path to embedding model for indexing"})
-    train_data: Optional[str] = field(default=None, metadata={"help": "Path to train data"})
-    index_path: Optional[str] = field(default="./qdrant", metadata={"help": "Path to save/load vector db"})
+# @dataclass
+# class VectorDBArguments:
+#     embedding_model: str = field(metadata={"help": "Path to embedding model for indexing"})
+#     train_data: Optional[str] = field(default=None, metadata={"help": "Path to train data"})
+#     index_path: Optional[str] = field(default="./qdrant", metadata={"help": "Path to save/load vector db"})
 
 
 @dataclass
 class RetrievalArguments:
+    embedding_model: str = field(metadata={"help": "Path to embedding model for indexing"})
     top_k: int = field(default=5, metadata={"help": "Top k for RAG})"})
     use_reranker: Optional[bool] = field(default=False, metadata={"help": "Whether to use reranker."})
     reranker_model: Optional[str] = field(default="", metadata={"help": "Path to reranker model."})
