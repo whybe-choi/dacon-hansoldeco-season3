@@ -24,6 +24,15 @@ python src/vectordb.py \
     --index_path ./qdrant
 ```
 
+## Query Expansion
+```bash
+python src/expand_query.py \
+    --model_name_or_path HumanF-MarkrAI/Gukbap-Gemma2-9B \
+    --test_data ./data/test_preprocessed.csv \
+    --output_data ./data/query_expansions.jsonl \
+    --token YOUR_HF_TOKEN
+```
+
 ## RAG
 ```bash
 python src/main.py \
@@ -31,6 +40,8 @@ python src/main.py \
     --test_data ./data/test_preprocessed.csv \
     --embedding_model nlpai-lab/KURE-v1 \
     --index_path ./qdrant \
-    --top_k 6 \
+    --top_k 5 \
     --submission_data ./submissions/submssion.csv
+    --token YOUR_HF_TOKEN
 ```
+
