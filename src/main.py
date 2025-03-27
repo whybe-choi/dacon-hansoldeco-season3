@@ -4,20 +4,23 @@ from tqdm import tqdm
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from transformers import HfArgumentParser
-from langchain_core.runnables import RunnablePassthrough
+from langchain.retrievers import ContextualCompressionRetriever
+from langchain.retrievers.document_compressors import CrossEncoderReranker
 from langchain_core.output_parsers import StrOutputParser
+from langchain_community.cross_encoders import HuggingFaceCrossEncoder
+from langchain_community.vectorstores import FAISS
 
 from llm import load_pipeline
-from prompt import load_prompt
-from arguments import ModelArguments, GenerationConfig, DataArguemnts, VectorDBArguments, RetrievalAtguments
-from vectordb import VectorDB
+from prompt import load_reference_prompt, load_rag_prompt
+from arguments import ModelArguments, GenerationConfig, DataArguemnts, RetrievalArguments
+from utils import load_documents, load_query_expansions, format_references, format_qa_pairs
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    parser = HfArgumentParser((ModelArguments, GenerationConfig, DataArguemnts, VectorDBArguments, RetrievalAtguments))
-    model_args, generation_config, data_args, vectordb_args, retrieval_args = parser.parse_args_into_dataclasses()
+    parser = HfArgumentParser((ModelArguments, GenerationConfig, DataArguemnts, RetrievalArguments))
+    model_args, generation_config, data_args, retrieval_args = parser.parse_args_into_dataclasses()
 
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
@@ -25,38 +28,68 @@ def main():
         level=logging.INFO,
     )
 
+    test = pd.read_csv(data_args.test_data, encoding="utf-8-sig")
+
     llm = load_pipeline(model_args, generation_config)
+    reference_prompt = load_reference_prompt()
+    rag_prompt = load_rag_prompt()
 
-    logging.info("Loading vector indexes from: %s", vectordb_args.index_path)
-    vector_db = VectorDB(vectordb_args)
-    vector_db.load()
+    query_expansions = load_query_expansions(data_args.query_expansions_path)
+    documents = load_documents(data_args.documents_path)
 
-    prompt = load_prompt()
+    # 문서를 위한 벡터 저장소 생성
+    vector_store = FAISS.from_documents(documents=documents, embedding=retrieval_args.embedding_model)
+    base_retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": retrieval_args.top_k})
+
+    # Reranker 모델을 사용하여 검색 결과를 재정렬
+    model = HuggingFaceCrossEncoder(model_name=retrieval_args.reranker_model)
+    compressor = CrossEncoderReranker(model=model, top_k=retrieval_args.reranker_top_k)
+    retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=base_retriever)
+
+    ###########################################################
+    # Step1 : 개별 테스트 데이터에 대한 다수의 쿼리 확장에 대한 답변을 생성 #
+    ###########################################################
+    reference_chain = reference_prompt | llm | StrOutputParser()
+
+    logging.info("Generating references for query expansions.. total expansions: %d", len(query_expansions))
+    references = []
+    for idx, query_expansion in enumerate(query_expansions):
+        test_id = query_expansion["test_id"]
+        questions = query_expansion["questions"]
+
+        logging.info(f"[{idx + 1}/{len(query_expansions)}  {test_id}]", "-----" * 10)
+
+        reference = []
+        for q_idx, question in enumerate(questions):
+            context = retriever.invoke(question)
+            context = format_references(context)
+            response = reference_chain.invoke(question=question, context=context)
+            response = response.strip()
+
+            logging.info("[Q %d]", q_idx)
+            logging.info("Question: %s", question)
+            logging.info("Response: %s", response)
+
+            reference.append({"question": question, "response": response})
+        references.append({"test_id": test_id, "references": reference})
+
+    ##################################################################
+    # Step2 : 확장된 쿼리와 그에 대한 답변을 통해 사고 원인에 대한 사고방지 대책 생성 #
+    ##################################################################
+
+    rag_chain = rag_prompt | llm | StrOutputParser()
 
     test = pd.read_csv(data_args.test_data, encoding="utf-8-sig")
     logging.info("Generating text for test data.. total rows: %d", len(test))
 
     test_results = []
     for idx, row in tqdm(test.iterrows(), total=len(test), desc="Generating responses"):
-        category = row.get("공종(중분류)", "")
-        query = row.get("사고원인", "")
+        query = row["사고원인"]
+        context = references[idx]
+        context = format_qa_pairs(context["references"])
 
-        retrieved_docs = vector_db.search(query, category, retrieval_args.top_k)
-        train_examples = "\n\n".join(
-            [f"Question: {doc.page_content}\Answer: {doc.metadata['solution']}" for doc in retrieved_docs]
-        )
+        response = rag_chain.invoke(question=query, context=context)
 
-        chain = (
-            {
-                "train_examples": lambda x: train_examples,
-                "query": RunnablePassthrough(),
-            }
-            | prompt
-            | llm
-            | StrOutputParser()
-        )
-
-        response = chain.invoke(query).strip()
         test_results.append(response)
 
         logging.info("[Row %d]", idx)
