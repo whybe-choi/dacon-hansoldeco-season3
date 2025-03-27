@@ -9,17 +9,18 @@ from langchain.retrievers.document_compressors import CrossEncoderReranker
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.cross_encoders import HuggingFaceCrossEncoder
 from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
 
 from llm import load_pipeline
 from prompt import load_reference_prompt, load_rag_prompt
-from arguments import ModelArguments, GenerationConfig, DataArguemnts, RetrievalArguments
+from arguments import ModelArguments, GenerationConfig, DataArguments, RetrievalArguments
 from utils import load_documents, load_query_expansions, format_references, format_qa_pairs
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    parser = HfArgumentParser((ModelArguments, GenerationConfig, DataArguemnts, RetrievalArguments))
+    parser = HfArgumentParser((ModelArguments, GenerationConfig, DataArguments, RetrievalArguments))
     model_args, generation_config, data_args, retrieval_args = parser.parse_args_into_dataclasses()
 
     logging.basicConfig(
@@ -38,12 +39,14 @@ def main():
     documents = load_documents(data_args.documents_path)
 
     # 문서를 위한 벡터 저장소 생성
-    vector_store = FAISS.from_documents(documents=documents, embedding=retrieval_args.embedding_model)
+    vector_store = FAISS.from_documents(
+        documents=documents, embedding=HuggingFaceEmbeddings(model_name=retrieval_args.embedding_model)
+    )
     base_retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": retrieval_args.top_k})
 
     # Reranker 모델을 사용하여 검색 결과를 재정렬
     model = HuggingFaceCrossEncoder(model_name=retrieval_args.reranker_model)
-    compressor = CrossEncoderReranker(model=model, top_k=retrieval_args.reranker_top_k)
+    compressor = CrossEncoderReranker(model=model, top_n=retrieval_args.reranker_top_k)
     retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=base_retriever)
 
     ###########################################################
@@ -57,13 +60,13 @@ def main():
         test_id = query_expansion["test_id"]
         questions = query_expansion["questions"]
 
-        logging.info(f"[{idx + 1}/{len(query_expansions)}  {test_id}]", "-----" * 10)
+        logging.info(f"[{idx + 1}/{len(query_expansions)}  {test_id}]")
 
         reference = []
         for q_idx, question in enumerate(questions):
             context = retriever.invoke(question)
             context = format_references(context)
-            response = reference_chain.invoke(question=question, context=context)
+            response = reference_chain.invoke({"question": question, "context": context})
             response = response.strip()
 
             logging.info("[Q %d]", q_idx)
@@ -88,7 +91,7 @@ def main():
         context = references[idx]
         context = format_qa_pairs(context["references"])
 
-        response = rag_chain.invoke(question=query, context=context)
+        response = rag_chain.invoke({"query": query, "context": context})
 
         test_results.append(response)
 

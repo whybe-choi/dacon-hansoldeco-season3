@@ -37,7 +37,7 @@ class GenerationConfig:
 
 
 @dataclass
-class DataArguemnts:
+class DataArguments:
     test_data: str = field(metadata={"help": "Path to test"})
     submission_data: Optional[str] = field(default=None, metadata={"help": "Path to submission"})
     output_data: Optional[str] = field(default=None, metadata={"help": "Path to save query expansion"})

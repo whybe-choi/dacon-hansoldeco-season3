@@ -35,7 +35,7 @@ def load_query_expansions(query_expansions_path: str) -> List[str]:
 
 
 def format_references(docs):
-    return "\n\n".join([doc for doc in docs])
+    return "\n\n".join([doc.page_content for doc in docs])
 
 
 def format_qa_pairs(doc_pairs):
