@@ -21,6 +21,8 @@ def load_pipeline(model_args, generation_config):
         quantization_config=bnb_config if model_args.use_bnb else None,
         device_map="auto",
         trust_remote_code=True,
+        attn_implementation=model_args.attn_implementation,
+        torch_dtype=model_args.torch_dtype,
     )
 
     text_generation_pipeline = pipeline(
