@@ -40,13 +40,13 @@ The cause of the accident is as follows: \
 We are trying to find preventive measures in the safety guideline documents. Please generate 3 questions in Korean.
 
 <Output Format>
-{
+{{
     "questions": [
         "Question 1",
         "Question 2",
         "Question 3"
     ]
-}
+}}
 """
     prompt = PromptTemplate(
         input_variables=["job_process", "gongjong", "human_accident", "accident_object", "accident_cause"],
