@@ -36,16 +36,15 @@ python src/expand_query.py \
 ## RAG
 ```bash
 python src/main.py \
-    --model_name_or_path rtzr/ko-gemma-2-9b-it \
+    --model_name_or_path HumanF-MarkrAI/Gukbap-Gemma2-9B \
     --test_data ./data/test_preprocessed.csv \
     --embedding_model nlpai-lab/KURE-v1 \
-    --index_path ./qdrant \
     --top_k 30 \
     --documents_path ./data/documents \
-    --use_rernaker true \
+    --use_reranker true \
     --reranker_model dragonkue/bge-reranker-v2-m3-ko \
-    --rernaker_top_k 10 \
-    --submission_data ./submissions/submssion.csv
+    --reranker_top_k 10 \
+    --submission_data ./submissions/submssion.csv \
     --token YOUR_HF_TOKEN
 ```
 
