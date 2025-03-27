@@ -24,6 +24,7 @@ class ModelArguments:
             "choices": ["auto", "bfloat16", "float16", "float32"],
         },
     )
+    token: Optional[str] = field(default="", metadata={"help": "Your huggingface token"})
 
 
 @dataclass
@@ -38,7 +39,8 @@ class GenerationConfig:
 @dataclass
 class DataArguemnts:
     test_data: str = field(metadata={"help": "Path to test"})
-    submission_data: str = field(metadata={"help": "Path to submission"})
+    submission_data: Optional[str] = field(default=None, metadata={"help": "Path to submission"})
+    output_data: Optional[str] = field(default=None, metadata={"help": "Path to query expansion"})
 
     def __post_init__(self):
         if not os.path.exists(self.test_data):
