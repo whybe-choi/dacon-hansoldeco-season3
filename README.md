@@ -45,3 +45,8 @@ python src/main.py \
     --token YOUR_HF_TOKEN
 ```
 
+## Members
+|홍재민|최용빈|
+| :-: | :-: |
+| <a href="https://github.com/geminii01" target="_blank"><img src='https://avatars.githubusercontent.com/u/171089104?v=4' height=130 width=130></img> | <a href="https://github.com/whybe-choi" target="_blank"><img src='https://avatars.githubusercontent.com/u/64704608?v=4' height=130 width=130></img> |
+| <a href="https://github.com/geminii01" target="_blank"><img src="https://img.shields.io/badge/GitHub-black.svg?&style=round&logo=github"/></a> | <a href="https://github.com/whybe-choi" target="_blank"><img src="https://img.shields.io/badge/GitHub-black.svg?&style=round&logo=github"/></a> |
