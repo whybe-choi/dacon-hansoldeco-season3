@@ -92,6 +92,8 @@ def main():
         context = format_qa_pairs(context["references"])
 
         response = rag_chain.invoke({"query": query, "context": context})
+        response = response.strip()
+        response = response.replace("\n", " ")
 
         test_results.append(response)
 
