@@ -7,7 +7,7 @@ Based on the provided question and retrieved safety guidelines, generate a singl
 Follow these guidelines when responding:
 - Do not provide multiple alternative measures—combine key ideas into one well-structured sentence.
 - Ensure the measure is clear, actionable, and directly applicable to construction sites.
-- Keep the response within ONLY ONE sentence in KOREAN.
+- Answer must be within ONLY ONE sentence in KOREAN.
 
 Question: {question}
 Context:
@@ -65,7 +65,7 @@ Follow these guidelines when responding:
 - Extract and combine the most critical safety measures from all responses
 - Create a unified, comprehensive safety guideline that addresses the central issue
 - Ensure the final answer is clear, actionable, and directly applicable to construction sites
-- Keep the response within ONLY ONE sentence in KOREAN.
+- Answer must be within ONLY ONE sentence in KOREAN.
 
 Query: {query}
 

@@ -32,6 +32,7 @@ class GenerationConfig:
     do_sample: Optional[bool] = field(default=False, metadata={"help": "Whether to use sampling."})
     temperature: Optional[float] = field(default=None, metadata={"help": "Sampling temperature."})
     top_p: Optional[float] = field(default=None, metadata={"help": "Top-p sampling."})
+    num_beams: Optional[int] = field(default=1, metadata={"help": "Number of beams for beam search."})
     max_new_tokens: Optional[int] = field(default=384, metadata={"help": "Max number of tokens to generate."})
     return_full_text: Optional[bool] = field(default=False, metadata={"help": "Whether to return full text."})
 

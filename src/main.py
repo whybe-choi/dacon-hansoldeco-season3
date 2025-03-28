@@ -56,7 +56,7 @@ def main():
 
     logging.info("Generating references for query expansions.. total expansions: %d", len(query_expansions))
     references = []
-    for idx, query_expansion in enumerate(query_expansions):
+    for idx, query_expansion in tqdm(enumerate(query_expansions), total=len(query_expansions), desc="Generating references"):
         test_id = query_expansion["test_id"]
         questions = query_expansion["questions"]
 
