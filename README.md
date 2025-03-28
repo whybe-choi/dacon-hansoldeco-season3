@@ -27,7 +27,7 @@ Please use **[this notebook](./notebooks/data-preprocessing-csv.ipynb)** for dat
 ## Query Expansion
 ```bash
 python src/expand_query.py \
-    --model_name_or_path HumanF-MarkrAI/Gukbap-Gemma2-9B \
+    --model_name_or_path rtzr/ko-gemma-2-9b-it \
     --test_data ./data/test_preprocessed.csv \
     --output_data ./data/query_expansions.jsonl \
     --token YOUR_HF_TOKEN
@@ -36,7 +36,7 @@ python src/expand_query.py \
 ## RAG
 ```bash
 python src/main.py \
-    --model_name_or_path HumanF-MarkrAI/Gukbap-Gemma2-9B \
+    --model_name_or_path rtzr/ko-gemma-2-9b-it \
     --attn_implementation eager \
     --test_data ./data/test_preprocessed.csv \
     --query_expansions_path ./data/query_expansions.jsonl \
