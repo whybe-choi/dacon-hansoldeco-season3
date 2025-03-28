@@ -46,7 +46,7 @@ python src/main.py \
     --use_reranker true \
     --reranker_model dragonkue/bge-reranker-v2-m3-ko \
     --reranker_top_k 10 \
-    --submission_data ./submissions/submssion.csv \
+    --submission_data ./submissions/submission.csv \
     --token YOUR_HF_TOKEN
 ```
 
