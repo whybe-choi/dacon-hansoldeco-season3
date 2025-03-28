@@ -1,5 +1,5 @@
 # dacon-hansoldeco-season3
-<img width="1190" alt="Image" src="https://github.com/user-attachments/assets/04c25ede-982d-4ccb-94cf-ef0e1ca9434d" />
+<img width="1190" alt="Image" src="https://github.com/user-attachments/assets/6904a0cc-5b78-4a8f-ba38-a86cf33d56e7" />
 
 ## Results
 |Name|Type|Performance|Rank|
@@ -15,14 +15,14 @@ pip install -r requirements.txt
 pip install flash-attn --no-build-isolation
 ```
 
-## Indexing
+## Methodology
+For a detailed explanation of the methodology, please refer to our [presentation slides](./slides/[Team%20YG]%20데이콘_한솔데코3.pdf)
 
-```bash
-python src/vectordb.py \
-    --embedding_model nlpai-lab/KURE-v1 \
-    --train_data ./data/train_preprocessed.csv \
-    --index_path ./qdrant
-```
+![Image](https://github.com/user-attachments/assets/40a8026a-a1ad-4f6d-95aa-4d90e5eb5ec7)
+
+## Preprocessing
+
+Please use **[this notebook](./notebooks/data-preprocessing-csv.ipynb)** for data preprocessing
 
 ## Query Expansion
 ```bash
