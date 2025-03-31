@@ -59,7 +59,9 @@ class DataArguments:
 
 @dataclass
 class RetrievalArguments:
-    embedding_model: str = field(metadata={"help": "Path to embedding model for indexing"})
+    embedding_model: Optional[str] = field(
+        default="nlpai-lab/KURE-v1", metadata={"help": "Path to embedding model for indexing"}
+    )
     top_k: int = field(default=5, metadata={"help": "Top k for RAG})"})
     use_reranker: Optional[bool] = field(default=False, metadata={"help": "Whether to use reranker."})
     reranker_model: Optional[str] = field(default="", metadata={"help": "Path to reranker model."})
