@@ -8,13 +8,13 @@ from langchain_core.output_parsers import StrOutputParser
 
 from llm import load_pipeline
 from prompt import load_query_expansion_prompt
-from arguments import ModelArguments, GenerationConfig, DataArguemnts, RetrievalArguments
+from arguments import ModelArguments, GenerationConfig, DataArguments, RetrievalArguments
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    parser = HfArgumentParser((ModelArguments, GenerationConfig, DataArguemnts, RetrievalArguments))
+    parser = HfArgumentParser((ModelArguments, GenerationConfig, DataArguments, RetrievalArguments))
     model_args, generation_config, data_args, retrieval_args = parser.parse_args_into_dataclasses()
 
     logging.basicConfig(
