@@ -42,11 +42,12 @@ def main():
 
         # 체인 실행
         response = chain.invoke(kwargs)
-        response = response.replace("model```json\n", "")
+        response = response.replace("```json", "")
         response = response.replace("```", "")
+        response = response.replace("\n", "")
         response_json = json.loads(response)
 
-        result = {"quesitons": response_json.get("quesitons", []), "test_id": row["ID"]}
+        result = {"quesitons": response_json.get("questions", []), "test_id": row["ID"]}
         results.append(result)
         print(result)
 
