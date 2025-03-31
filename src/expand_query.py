@@ -47,7 +47,7 @@ def main():
         response = response.replace("\n", "")
         response_json = json.loads(response)
 
-        result = {"quesitons": response_json.get("questions", []), "test_id": row["ID"]}
+        result = {"questions": response_json.get("questions", []), "test_id": row["ID"]}
         results.append(result)
         print(result)
 
