@@ -2,9 +2,12 @@
 <img width="1190" alt="Image" src="https://github.com/user-attachments/assets/6904a0cc-5b78-4a8f-ba38-a86cf33d56e7" />
 
 ## Results
+
+> Due to the competition's evaluation metrics, the final evaluation to select the winners was limited to those who wanted to submit, and our team placed 7th out of 24 teams.
+
 |Name|Type|Performance|Rank|
 |---|---|---|---|
-|**[건설공사 사고 예방 및 대응책 생성 : 한솔데코 시즌3 AI 경진대회](https://dacon.io/competitions/official/236455/overview/description)**|NLP, LLM|||
+|**[건설공사 사고 예방 및 대응책 생성 : 한솔데코 시즌3 AI 경진대회](https://dacon.io/competitions/official/236455/overview/description)**|NLP, LLM|🥈 Top2% | 7/551 **(7/24)** |
 
 ## Environment
 
