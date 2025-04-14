@@ -25,7 +25,7 @@ For a detailed explanation of the methodology, please refer to our [presentation
 
 ## Preprocessing
 
-Please use **[this notebook](./notebooks/data-preprocessing-csv.ipynb)** for data preprocessing
+Please use **[this README](./notebooks/README.md)** for data preprocessing
 
 ## Query Expansion
 ```bash
